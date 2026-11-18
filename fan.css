@@ -23,10 +23,13 @@
   .hero__copy .v-display { font-size: clamp(1.4rem, .8rem + 1.3vw, 1.9rem); }
   .hero__copy .v-lede { font-size: .95rem; }
 }
-/* Телефон: три фото в веере стоят рядом по центру, чуть касаясь друг друга, а не наезжают друг на друга */
+/* Готовое фото выходит быстрее и сразу непрозрачное: сквозь него не просвечивают боковые */
+.fan__card { --w: clamp(0, calc((var(--v-p, 0) - .58) / .1), 1); }
+/* Телефон: веер дугой, среднее фото сверху по центру, боковые выглядывают симметрично */
 @media (max-width: 860px) {
   .fan { justify-self: center; }
-  .fan__card { width: 40%; left: 30%; }
-  .fan__card--1 { --a1: -3deg; --tx: -66%; }
-  .fan__card--3 { --a1: 3deg; --tx: 66%; }
+  .fan__card { width: 42%; left: 29%; }
+  .fan__card--1 { --a1: -7deg; --tx: -40%; z-index: 1; }
+  .fan__card--2 { z-index: 2; }
+  .fan__card--3 { --a1: 7deg; --tx: 40%; z-index: 1; }
 }

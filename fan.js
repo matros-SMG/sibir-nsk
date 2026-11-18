@@ -42,16 +42,18 @@
     var a = nu.animate([{ transform: 'translateX(' + (dir * 100) + '%)' }, { transform: 'translateX(0)' }], opt);
     return a.finished.then(function () { old.remove(); nu.style.position = ''; nu.style.left = ''; nu.style.top = ''; nu.style.transition = ''; nu.getAnimations().forEach(function (x) { x.cancel(); }); }).catch(function () {});
   }
+  var safety = null;
   function step(d) {
     if (busy) return;
     busy = true;
+    clearTimeout(safety);
     idx = idx.map(function (i) { return (i + d + pool.length) % pool.length; });
     var order = d > 0 ? [0, 1, 2, 3] : [3, 2, 1, 0];
     Promise.all(idx.map(function (i, k) {
       var pre = new Image(), n = order.indexOf(k);
       return new Promise(function (res) { pre.onload = pre.onerror = res; pre.src = pool[i].src; }).then(function () { return slide(k, i, d, n * 50); });
-    })).then(function () { busy = false; });
-    setTimeout(function () {   /* страховка: если вкладка была в фоне и анимация не дошла до конца */
+    })).then(function () { busy = false; clearTimeout(safety); });
+    safety = setTimeout(function () {   /* страховка: если вкладка была в фоне и анимация не дошла до конца */
       cards.forEach(function (c) { var im = c.querySelectorAll('img'); for (var n = 0; n < im.length - 1; n++) im[n].remove(); var last = im[im.length - 1]; last.getAnimations().forEach(function (x) { x.cancel(); }); last.style.position = ''; last.style.left = ''; last.style.top = ''; });
       busy = false;
     }, 1400);

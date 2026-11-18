@@ -51,6 +51,10 @@
       var pre = new Image(), n = order.indexOf(k);
       return new Promise(function (res) { pre.onload = pre.onerror = res; pre.src = pool[i].src; }).then(function () { return slide(k, i, d, n * 50); });
     })).then(function () { busy = false; });
+    setTimeout(function () {   /* страховка: если вкладка была в фоне и анимация не дошла до конца */
+      cards.forEach(function (c) { var im = c.querySelectorAll('img'); for (var n = 0; n < im.length - 1; n++) im[n].remove(); var last = im[im.length - 1]; last.getAnimations().forEach(function (x) { x.cancel(); }); last.style.position = ''; last.style.left = ''; last.style.top = ''; });
+      busy = false;
+    }, 1400);
   }
   function act(k) {
     if (k === 0) step(-1);

@@ -24,22 +24,33 @@
   var legend = fan.querySelector('.fan__legend');
   if (legend) legend.textContent = 'Нажмите на боковое фото - листать, на среднее - увеличить';
 
-  function paint(k, i) {
-    var c = cards[k], im = c.querySelector('img'), cap = c.querySelector('figcaption'), p = pool[i];
-    var pre = new Image();
-    pre.onload = function () {
-      if (idx[k] !== i) return;
-      im.style.opacity = '0';
-      setTimeout(function () { if (idx[k] !== i) { im.style.opacity = ''; return; } im.src = p.src; im.alt = p.cap; if (cap) cap.textContent = p.cap; im.style.opacity = ''; }, 150);
-    };
-    pre.src = p.src;
+  var busy = false, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function warm() { pool.forEach(function (p) { new Image().src = p.src; }); }
+  if (document.readyState === 'complete') setTimeout(warm, 300); else addEventListener('load', function () { setTimeout(warm, 300); });
+
+  /* Плавная смена: старое фото уезжает, новое заезжает с той же стороны (dir = 1 листаем вперёд, -1 назад) */
+  function slide(k, i, dir, delay) {
+    var c = cards[k], old = c.querySelector('img'), cap = c.querySelector('figcaption'), p = pool[i];
+    var nu = old.cloneNode(false);
+    nu.removeAttribute('loading'); nu.src = p.src; nu.alt = p.cap;
+    [old, nu].forEach(function (im) { im.style.position = 'absolute'; im.style.left = '0'; im.style.top = '0'; im.style.transition = 'none'; });
+    c.insertBefore(nu, old.nextSibling);
+    var opt = { duration: 520, delay: delay, easing: 'cubic-bezier(.45,.05,.2,1)', fill: 'both' };
+    if (cap) setTimeout(function () { cap.textContent = p.cap; }, delay + 220);
+    if (reduce || !old.animate) { old.remove(); return Promise.resolve(); }
+    old.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(' + (-dir * 100) + '%)' }], opt);
+    var a = nu.animate([{ transform: 'translateX(' + (dir * 100) + '%)' }, { transform: 'translateX(0)' }], opt);
+    return a.finished.then(function () { old.remove(); nu.style.position = ''; nu.style.left = ''; nu.style.top = ''; nu.style.transition = ''; nu.getAnimations().forEach(function (x) { x.cancel(); }); }).catch(function () {});
   }
-  var warmed = false;
-  function warm() { if (warmed) return; warmed = true; pool.forEach(function (p) { new Image().src = p.src; }); }
-  fan.addEventListener('pointerenter', warm, { once: true });
   function step(d) {
+    if (busy) return;
+    busy = true;
     idx = idx.map(function (i) { return (i + d + pool.length) % pool.length; });
-    idx.forEach(function (i, k) { paint(k, i); });
+    var order = d > 0 ? [0, 1, 2, 3] : [3, 2, 1, 0];
+    Promise.all(idx.map(function (i, k) {
+      var pre = new Image(), n = order.indexOf(k);
+      return new Promise(function (res) { pre.onload = pre.onerror = res; pre.src = pool[i].src; }).then(function () { return slide(k, i, d, n * 50); });
+    })).then(function () { busy = false; });
   }
   function act(k) {
     if (k === 0) step(-1);

@@ -28,11 +28,15 @@
     var c = cards[k], im = c.querySelector('img'), cap = c.querySelector('figcaption'), p = pool[i];
     var pre = new Image();
     pre.onload = function () {
+      if (idx[k] !== i) return;
       im.style.opacity = '0';
-      setTimeout(function () { im.src = p.src; im.alt = p.cap; if (cap) cap.textContent = p.cap; im.style.opacity = ''; }, 150);
+      setTimeout(function () { if (idx[k] !== i) { im.style.opacity = ''; return; } im.src = p.src; im.alt = p.cap; if (cap) cap.textContent = p.cap; im.style.opacity = ''; }, 150);
     };
     pre.src = p.src;
   }
+  var warmed = false;
+  function warm() { if (warmed) return; warmed = true; pool.forEach(function (p) { new Image().src = p.src; }); }
+  fan.addEventListener('pointerenter', warm, { once: true });
   function step(d) {
     idx = idx.map(function (i) { return (i + d + pool.length) % pool.length; });
     idx.forEach(function (i, k) { paint(k, i); });

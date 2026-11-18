@@ -7,3 +7,7 @@
 .fan__card:focus-visible { outline: 2px solid var(--v-accent, #2f6b4d); outline-offset: 3px; }
 .fan__card--1, .fan__card--3 { cursor: pointer; }
 .fan__card--2, .fan__card--wrap { cursor: zoom-in; }
+/* Заголовок первого экрана помельче: целиком читается и не уходит под верхнюю плашку */
+.hero__copy .v-display { font-size: clamp(1.7rem, .95rem + 1.9vw, 2.55rem); line-height: 1.12; max-width: 24ch; }
+@media (max-height: 760px) and (min-width: 861px) { .hero__copy .v-display { font-size: clamp(1.6rem, .9rem + 1.6vw, 2.2rem); } }
+@media (max-width: 860px) { .hero__copy .v-display { font-size: clamp(1.55rem, 1.1rem + 2.2vw, 2.1rem); } }

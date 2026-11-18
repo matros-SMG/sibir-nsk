@@ -1,0 +1,10 @@
+/* Узкая верхняя плашка */
+.bar, .v-page .bar { padding-top: 6px; padding-bottom: 6px; gap: var(--v-3, 12px); }
+.bar__mark, .bar__tel { min-height: 34px; }
+.bar .v-btn, .v-page .bar .v-btn { min-height: 38px; padding-top: 0; padding-bottom: 0; font-size: .95rem; }
+/* Листание и увеличение фото в веере */
+.fan__card { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.fan__card img { transition: opacity .18s ease; }
+.fan__card:focus-visible { outline: 2px solid var(--v-accent, #2f6b4d); outline-offset: 3px; }
+.fan__card--1, .fan__card--3 { cursor: pointer; }
+.fan__card--2, .fan__card--wrap { cursor: zoom-in; }

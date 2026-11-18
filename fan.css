@@ -29,7 +29,7 @@
 @media (max-width: 860px) {
   .fan { justify-self: center; }
   .fan__card { width: 42%; left: 29%; }
-  .fan__card--1 { --a1: -7deg; --tx: -40%; z-index: 1; }
+  .fan__card--1 { --a1: -7deg; --tx: -34%; z-index: 1; }
   .fan__card--2 { z-index: 2; }
-  .fan__card--3 { --a1: 7deg; --tx: 40%; z-index: 1; }
+  .fan__card--3 { --a1: 7deg; --tx: 34%; z-index: 1; }
 }

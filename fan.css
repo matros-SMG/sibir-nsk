@@ -11,3 +11,15 @@
 .hero__copy .v-display { font-size: clamp(1.7rem, .95rem + 1.9vw, 2.55rem); line-height: 1.12; max-width: 24ch; }
 @media (max-height: 760px) and (min-width: 861px) { .hero__copy .v-display { font-size: clamp(1.6rem, .9rem + 1.6vw, 2.2rem); } }
 @media (max-width: 860px) { .hero__copy .v-display { font-size: clamp(1.55rem, 1.1rem + 2.2vw, 2.1rem); } }
+/* Низкие экраны: опускаем блок текста и сжимаем промежутки, чтобы заголовок не лез под верхнюю плашку */
+@media (max-height: 780px) {
+  .hero__copy { bottom: clamp(1.5rem, 5vh, 3.5rem); }
+  .hero__label { margin-bottom: var(--v-2, 8px); }
+  .hero__copy .v-lede { margin-top: var(--v-3, 12px); }
+  .hero__rate { margin-top: var(--v-2, 8px); min-height: 36px; }
+  .hero__cta { margin-top: var(--v-4, 16px); }
+}
+@media (max-height: 600px) {
+  .hero__copy .v-display { font-size: clamp(1.4rem, .8rem + 1.3vw, 1.9rem); }
+  .hero__copy .v-lede { font-size: .95rem; }
+}
